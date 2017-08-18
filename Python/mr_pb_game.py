@@ -1,11 +1,12 @@
 #
 # pygame_test.py
 # Practicing with pygame
-# Last Modified: 8/16/2017
+# Last Modified: 8/17/2017
 # Modified By: Andrew Roberts
 #
 
 from collections import namedtuple
+import sprite_classes
 import pygame
 import math
 pygame.init()
@@ -18,39 +19,28 @@ black = Color(0, 0, 0)
 white = Color(255, 255, 255)
 light_blue = Color(153, 204, 255)
 
-mr_pb_png = pygame.image.load("game_character.png")
-MR_PB_VELOCITY = 10
-
-def mr_pb(x, y):
-	game_display.blit(mr_pb_png, (x, y))
-x = DISPLAY_WIDTH * .48
-y = DISPLAY_HEIGHT * .87
-
 game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 pygame.display.set_caption("Practice Game")
 clock = pygame.time.Clock()
 
-lost = False
-x_change = 0 
+MR_PB_VELOCITY = 10
+mr_pb_x = DISPLAY_WIDTH * .48
+mr_pb_y = DISPLAY_HEIGHT * .87
+mr_pb = sprite_classes.MrPB(game_display, "game_character.png", MR_PB_VELOCITY, mr_pb_x, mr_pb_y)
 
-while not lost: 
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			lost = True		
-		if event.type == pygame.KEYDOWN:
-			if event.key == pygame.K_LEFT:
-				x_change = -MR_PB_VELOCITY
-			if event.key == pygame.K_RIGHT:
-				x_change = MR_PB_VELOCITY
-		if event.type == pygame.KEYUP:
-			if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-				x_change = 0	
-	x += x_change
+def game_loop():
+	game_exit = False
 
-	game_display.fill(light_blue)	
-	mr_pb(x, y)
-	pygame.display.update()
-	clock.tick(60)
+	while not game_exit: 
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				game_exit = True		
+			mr_pb.move_mr_pb(event)
 
+		game_display.fill(light_blue)	
+		mr_pb.draw()
+		pygame.display.update()
+		clock.tick(60)
+game_loop()
 pygame.quit()
 
