@@ -1,7 +1,7 @@
 #
 # pygame_test.py
 # Practicing with pygame
-# Last Modified: 8/17/2017
+# Last Modified: 8/18/2017
 # Modified By: Andrew Roberts
 #
 
@@ -9,6 +9,7 @@ from collections import namedtuple
 import sprite_classes
 import pygame
 import math
+import time
 pygame.init()
 
 DISPLAY_WIDTH = 800
@@ -46,9 +47,29 @@ def game_loop():
 		mr_pb.draw()
 		for ball in ball_array:
 			ball.draw()
+			if ball.detect_collision(mr_pb):
+				game_exit = True
+				#game_over()
 
 		pygame.display.update()
 		clock.tick(60)
+
+def game_over():
+	message_display("Game Over")
+#	time.sleep(2)
+#	game_loop()
+
+def message_display(text):
+	text_params = pygame.font.Font("freesansbold.ttf", 115)	
+	surface, rect = text_objects(text, text_params)
+	rect.center = ((DISPLAY_WIDTH/2), (DISPLAY_HEIGHT/2))
+	game_display.blit(surface, rect)
+
+def text_objects(text, font):
+	surface = font.render(text, True, black)
+	return surface, surface.get_rect()
+	
+
 game_loop()
 pygame.quit()
 

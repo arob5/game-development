@@ -46,6 +46,7 @@ class MrPB():
 		self.pos = Vector(x, y)
 		self.mass = 3
 		self.game_display = game_display
+		self.sprite_size = (27, 80)
 		self.floor = floor
  
 	def draw(self):
@@ -89,13 +90,13 @@ class MrPB():
 					self.vel = Vector(0, 0)	
 
 class Ball():
-	def __init__(self, surface, pos, speed=4, color=(255, 153, 102)):
+	def __init__(self, surface, pos, speed_scale=4, color=(255, 153, 102)):
 		self.surface = surface
 		x, y = pos
 		self.pos = Vector(x, y)
-		self.speed = speed
+		self.speed = speed_scale
 		self.radius = np.random.randint(low=4, high=30)
-		self.vel = speed * self.random_direction()  
+		self.vel = speed_scale * self.random_direction()  
 		self.color = color
 	
 	def random_direction(self):
@@ -103,8 +104,13 @@ class Ball():
 		y = np.random.randint(low=-20, high=20)
 
 		v = Vector(x, y).normalize()
-		v.x = int(np.round(v.x))
-		v.y = int(np.round(v.y))
+		v.x = int(np.round(v.x)) + np.random.randint(low=-2, high=2)
+		v.y = int(np.round(v.y)) + np.random.randint(low=-2, high=2)
+
+		if v.x == 0:
+			v.x += np.random.randint(low=-2, high=2)
+		if v.y == 0:
+			v.y += np.random.randint(low=-2, high=2)
 
 		return v
 
@@ -121,4 +127,13 @@ class Ball():
 		self.pos = self.pos + self.vel
 		self.check_boundaries()	
 		pygame.draw.circle(self.surface, self.color, self.pos.return_coordinates_tuple(), self.radius)
+
+	def detect_collision(self, mr_pb):
+		x1, y1 = mr_pb.pos.return_coordinates_tuple()
+		w, h = mr_pb.sprite_size
+		x2, y2 = self.pos.return_coordinates_tuple()
+		r = self.radius
+
+		return (x1+w >= x2-r) and (y1 <= y2+r) and (x1 <= x2+r) and (y1+h >= y2-r)
+	
 
