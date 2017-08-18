@@ -23,10 +23,14 @@ game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 pygame.display.set_caption("Practice Game")
 clock = pygame.time.Clock()
 
+# Character sprite
 MR_PB_VELOCITY = 10
 mr_pb_x = DISPLAY_WIDTH * .48
 mr_pb_y = DISPLAY_HEIGHT * .87
-mr_pb = sprite_classes.MrPB(game_display, "game_character.png", MR_PB_VELOCITY, mr_pb_x, mr_pb_y)
+mr_pb = sprite_classes.MrPB(game_display, "game_character.png", MR_PB_VELOCITY, mr_pb_x, mr_pb_y, mr_pb_y)
+
+# Character obstacles
+ball_array = [sprite_classes.Ball(game_display, (400, 300)) for i in range(10)]
 
 def game_loop():
 	game_exit = False
@@ -35,10 +39,14 @@ def game_loop():
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				game_exit = True		
-			mr_pb.move_mr_pb(event)
+			mr_pb.update_mr_pb(event)
 
 		game_display.fill(light_blue)	
+
 		mr_pb.draw()
+		for ball in ball_array:
+			ball.draw()
+
 		pygame.display.update()
 		clock.tick(60)
 game_loop()
